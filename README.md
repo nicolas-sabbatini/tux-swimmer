@@ -1,2 +1,2 @@
 # tux-swimmer
-A flappy bird clone 
+A clone of the popular game flappy bird made in LÖVE
