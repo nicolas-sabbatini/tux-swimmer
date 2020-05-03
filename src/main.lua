@@ -1,5 +1,8 @@
 local push = require './lib/push'
 local play_state = require 'states/play-state'
+local score_state = require 'states/score-state'
+local timer_state = require 'states/timer-state'
+local menu_state = require 'states/menu-state'
 
 -- Gloval
 KEY_TABLE = {}
@@ -11,7 +14,7 @@ local FAKE_WIDTH  = 480
 local FAKE_HEIGHT = 270
 
 -- Local
-local background, midleground, play
+local background, midleground, current, states, order
 
 -- Auxiliar functions
 function love.resize(w, h)
@@ -43,7 +46,19 @@ function love.load()
     xm = 30,
   }
 
-  play = play_state:load(FAKE_WIDTH, FAKE_HEIGHT)
+  order = {
+    menu = 'timer',
+    timer = 'play',
+    play = 'score',
+    score = 'timer',
+  }
+  current = 'menu'
+  states =  {
+    menu = menu_state:load(FAKE_WIDTH, FAKE_HEIGHT),
+    timer = timer_state:load(FAKE_WIDTH, FAKE_HEIGHT),
+    play = play_state:load(FAKE_WIDTH, FAKE_HEIGHT),
+    score = score_state:load(FAKE_WIDTH, FAKE_HEIGHT, 0),
+  }
 
   push:setupScreen(FAKE_WIDTH, FAKE_HEIGHT, REAL_WIDTH, REAL_HEIGHT, {
     vsync = true,
@@ -64,7 +79,11 @@ function love.update(dt)
   if midleground.x1 < -FAKE_WIDTH then midleground.x1 = FAKE_WIDTH end
   if midleground.x2 < -FAKE_WIDTH then midleground.x2 = FAKE_WIDTH end
 
-  play:update(dt)
+  local value = states[current]:update(dt)
+  if value then
+    current = order[current]
+    states[current] = states[current]:reload(value) 
+  end
   KEY_TABLE = {}
 end
 
@@ -74,6 +93,6 @@ function love.draw()
   love.graphics.draw(background.img , background.x2, 0)
   love.graphics.draw(midleground.img , midleground.x1, 0)
   love.graphics.draw(midleground.img , midleground.x2, 0)
-  play:draw()
+  states[current]:draw()
   push:finish()
 end

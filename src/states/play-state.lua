@@ -28,9 +28,16 @@ function Play:load(width, height)
   {'assets/score1.wav', 'assets/score2.wav', 'assets/score3.wav', 'assets/score4.wav'},
   'assets/game_over.wav',
   {'assets/flap1.wav', 'assets/flap2.wav', 'assets/flap3.wav', 'assets/flap4.wav'})
+  
+  p.font = love.graphics.newFont('assets/fonts/fff-forward/FFFFORWA.TTF', 10)
+  p.font:setFilter('nearest')
+  
   return p
 end
 
+function Play.reload(self, value)
+  return self:load(self.LIMIT_WIDTH, self.LIMIT_HEIGHT)
+end
 
 function Play.update(self, dt)
   if self.player.alive then
@@ -52,6 +59,8 @@ function Play.update(self, dt)
         self.player:scoreUp()
       end
     end
+  else
+    return self.player.score
   end
 end
 
@@ -59,6 +68,8 @@ function Play.draw(self)
   for key, pipe in pairs(self.pipes) do
     pipe:draw()
   end
+  love.graphics.setFont(self.font)
+  love.graphics.printf('Score: ' .. self.player.score, 10, 10, self.LIMIT_WIDTH, 'left')
   self.player:draw()
 end
 
