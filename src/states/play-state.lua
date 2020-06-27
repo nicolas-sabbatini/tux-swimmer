@@ -24,7 +24,7 @@ function Play:load(width, height)
                             56) -- speed
   end
 
-  p.player = Player:new(width/2, height/2, 'assets/tux.png', 0, height, 1, -0.3, 
+  p.player = Player:new(width/2, height/2, 'assets/tux.png', 0, height, 3, -1.5, 
   {'assets/score1.wav', 'assets/score2.wav', 'assets/score3.wav', 'assets/score4.wav'},
   'assets/game_over.wav',
   {'assets/flap1.wav', 'assets/flap2.wav', 'assets/flap3.wav', 'assets/flap4.wav'})
